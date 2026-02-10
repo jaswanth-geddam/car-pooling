@@ -1,0 +1,49 @@
+# Base URL
+@baseUrl = http://localhost:3000
+
+### Health / Root
+GET {{baseUrl}}/
+
+### Register (example)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "geddamjaswanth44@gmal.com",
+  "password": "Password123!",
+  "phone": "+1234567890",
+  "firstName": "Test",
+  "lastName": "User"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test+1@example.com",
+  "password": "Password123!"
+}
+
+### Verify OTP (example)
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "test+1@example.com",
+  "otp": "123456"
+}
+
+### Refresh token
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "<PASTE_REFRESH_TOKEN_HERE>"
+}
+
+### Protected: Get user profile (example)
+# Replace <ACCESS_TOKEN> with the returned access token
+GET {{baseUrl}}/users/me
+Authorization: Bearer <ACCESS_TOKEN>
+
