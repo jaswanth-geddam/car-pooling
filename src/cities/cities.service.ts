@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { City } from '../entities/city.entity';
@@ -38,7 +38,7 @@ export class CitiesService {
     if (this.redis) {
       const cached = await this.redis.get(cacheKey);
       if (cached) {
-        return JSON.parse(cached);
+        return JSON.parse(cached) as CityResponseDto[];
       }
     }
 

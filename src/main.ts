@@ -34,4 +34,4 @@ async function bootstrap() {
   logger.log(`🚀 Car Pooling API running on port ${port}`);
   logger.log(`📚 API Endpoint: http://localhost:${port}/api/v1`);
 }
-bootstrap();
+bootstrap().catch((err) => console.error('Bootstrap failed', err));

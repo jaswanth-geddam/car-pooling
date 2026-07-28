@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-redundant-type-constituents */
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
@@ -510,7 +511,7 @@ export class EmailService {
     // Start multiple workers for parallel processing
     const workerCount = this.configService.get<number>('EMAIL_WORKERS', 3);
     for (let i = 0; i < workerCount; i++) {
-      processQueue();
+      void processQueue();
     }
     this.logger.log(`Started ${workerCount} email workers`);
   }

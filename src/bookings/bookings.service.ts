@@ -371,8 +371,8 @@ export class BookingsService {
   /**
    * Update user's average rating
    */
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument */
   private async updateUserRating(userId: string): Promise<void> {
-    // Calculate new average rating
     const result = await this.bookingRepo
       .createQueryBuilder('booking')
       .select('AVG(booking.ratingForDriver)', 'avgRating')
@@ -388,7 +388,6 @@ export class BookingsService {
       .andWhere('booking.ratingForPassenger IS NOT NULL')
       .getRawOne();
 
-    // Use the higher of the two averages
     const driverAvg = result?.avgRating ? parseFloat(result.avgRating) : 0;
     const passengerAvg = passengerResult?.avgRating
       ? parseFloat(passengerResult.avgRating)

@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { Ride, RideStatus } from '../entities/ride.entity';
@@ -55,7 +55,7 @@ export class RidesService {
       const cached = await this.redis.get(cacheKey);
       if (cached) {
         this.logger.debug(`Cache hit for search: ${cacheKey}`);
-        return JSON.parse(cached);
+        return JSON.parse(cached) as PaginatedRidesResponseDto;
       }
     }
 
@@ -294,7 +294,7 @@ export class RidesService {
    * Get rides created by a user (driver)
    */
   async getDriverRides(driverId: string, status?: RideStatus): Promise<Ride[]> {
-    const whereClause: any = { driverId };
+    const whereClause: Record<string, unknown> = { driverId };
     if (status) {
       whereClause.status = status;
     }

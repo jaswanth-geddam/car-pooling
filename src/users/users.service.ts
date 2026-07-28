@@ -47,8 +47,8 @@ export class UsersService {
     }
 
     user.isEmailVerified = true;
-    user.emailVerificationToken = undefined as any;
-    user.emailVerificationExpiry = undefined as any;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpiry = null;
     return this.repo.save(user);
   }
 
@@ -81,8 +81,8 @@ export class UsersService {
     }
 
     user.isEmailVerified = true;
-    user.emailVerificationToken = undefined as any;
-    user.emailVerificationExpiry = undefined as any;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpiry = null;
     return this.repo.save(user);
   }
 
