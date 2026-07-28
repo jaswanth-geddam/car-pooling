@@ -86,7 +86,9 @@ export class BookingsService {
         },
       });
       if (existingBooking) {
-        throw new ConflictException('You already have a pending booking for this ride');
+        throw new ConflictException(
+          'You already have a pending booking for this ride',
+        );
       }
 
       // Get passenger details
@@ -97,7 +99,9 @@ export class BookingsService {
         throw new NotFoundException('User not found');
       }
       if (!passenger.isEmailVerified) {
-        throw new BadRequestException('Please verify your email before booking');
+        throw new BadRequestException(
+          'Please verify your email before booking',
+        );
       }
 
       // Calculate total price
@@ -157,7 +161,13 @@ export class BookingsService {
   async getBookingById(bookingId: string, userId: string): Promise<Booking> {
     const booking = await this.bookingRepo.findOne({
       where: { id: bookingId },
-      relations: ['ride', 'ride.fromCity', 'ride.toCity', 'ride.driver', 'passenger'],
+      relations: [
+        'ride',
+        'ride.fromCity',
+        'ride.toCity',
+        'ride.driver',
+        'passenger',
+      ],
     });
 
     if (!booking) {
@@ -278,7 +288,10 @@ export class BookingsService {
         throw new BadRequestException('Can only reject pending bookings');
       }
       // Restore seats
-      await this.ridesService.updateAvailableSeats(booking.rideId, booking.seatsBooked);
+      await this.ridesService.updateAvailableSeats(
+        booking.rideId,
+        booking.seatsBooked,
+      );
     }
 
     if (dto.status === BookingStatus.CANCELLED) {
@@ -294,7 +307,10 @@ export class BookingsService {
       booking.cancellationReason = dto.cancellationReason || '';
       booking.cancelledAt = new Date();
       // Restore seats
-      await this.ridesService.updateAvailableSeats(booking.rideId, booking.seatsBooked);
+      await this.ridesService.updateAvailableSeats(
+        booking.rideId,
+        booking.seatsBooked,
+      );
     }
 
     booking.status = dto.status;

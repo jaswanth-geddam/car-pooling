@@ -178,7 +178,11 @@ export class RidesService {
 
     // Cache the result
     if (this.redis) {
-      await this.redis.setex(cacheKey, this.CACHE_TTL, JSON.stringify(response));
+      await this.redis.setex(
+        cacheKey,
+        this.CACHE_TTL,
+        JSON.stringify(response),
+      );
     }
 
     return response;
@@ -250,15 +254,19 @@ export class RidesService {
     await this.invalidateSearchCache(dto.fromCityId, dto.toCityId);
 
     // Send confirmation email
-    await this.emailService.sendRideCreatedEmail(driver.email, driver.firstName, {
-      rideId: savedRide.id,
-      fromCity: fromCity.name,
-      toCity: toCity.name,
-      departureDate: dto.departureDate,
-      departureTime: dto.departureTime,
-      totalSeats: dto.totalSeats,
-      pricePerSeat: dto.pricePerSeat,
-    });
+    await this.emailService.sendRideCreatedEmail(
+      driver.email,
+      driver.firstName,
+      {
+        rideId: savedRide.id,
+        fromCity: fromCity.name,
+        toCity: toCity.name,
+        departureDate: dto.departureDate,
+        departureTime: dto.departureTime,
+        totalSeats: dto.totalSeats,
+        pricePerSeat: dto.pricePerSeat,
+      },
+    );
 
     // Update driver's total rides count
     await this.userRepo.increment({ id: driverId }, 'totalRides', 1);
@@ -285,10 +293,7 @@ export class RidesService {
   /**
    * Get rides created by a user (driver)
    */
-  async getDriverRides(
-    driverId: string,
-    status?: RideStatus,
-  ): Promise<Ride[]> {
+  async getDriverRides(driverId: string, status?: RideStatus): Promise<Ride[]> {
     const whereClause: any = { driverId };
     if (status) {
       whereClause.status = status;
@@ -319,8 +324,13 @@ export class RidesService {
     if (ride.driverId !== driverId) {
       throw new ForbiddenException('You can only update your own rides');
     }
-    if (ride.status === RideStatus.COMPLETED || ride.status === RideStatus.CANCELLED) {
-      throw new BadRequestException('Cannot update completed or cancelled rides');
+    if (
+      ride.status === RideStatus.COMPLETED ||
+      ride.status === RideStatus.CANCELLED
+    ) {
+      throw new BadRequestException(
+        'Cannot update completed or cancelled rides',
+      );
     }
 
     // Update fields
@@ -384,7 +394,11 @@ export class RidesService {
     if (ride && ride.availableSeats <= 0) {
       ride.status = RideStatus.FULL;
       await this.rideRepo.save(ride);
-    } else if (ride && ride.availableSeats > 0 && ride.status === RideStatus.FULL) {
+    } else if (
+      ride &&
+      ride.availableSeats > 0 &&
+      ride.status === RideStatus.FULL
+    ) {
       ride.status = RideStatus.ACTIVE;
       await this.rideRepo.save(ride);
     }
@@ -409,7 +423,9 @@ export class RidesService {
       const keys = await this.redis.keys(pattern);
       if (keys.length > 0) {
         await this.redis.del(...keys);
-        this.logger.debug(`Invalidated ${keys.length} cache keys for route ${fromCityId}->${toCityId}`);
+        this.logger.debug(
+          `Invalidated ${keys.length} cache keys for route ${fromCityId}->${toCityId}`,
+        );
       }
     }
   }

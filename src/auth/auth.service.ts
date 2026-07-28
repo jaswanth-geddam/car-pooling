@@ -123,7 +123,11 @@ export class AuthService {
     // Send "email verified" confirmation (don't block response if email fails)
     void this.emailService
       .sendEmailVerifiedEmail(user.email, user.firstName)
-      .catch((err) => this.logger.warn(`Verification confirmation email failed: ${(err as Error).message}`));
+      .catch((err) =>
+        this.logger.warn(
+          `Verification confirmation email failed: ${(err as Error).message}`,
+        ),
+      );
 
     return {
       user: {

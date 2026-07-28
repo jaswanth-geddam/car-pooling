@@ -10,11 +10,7 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { RidesService } from './rides.service';
-import {
-  CreateRideDto,
-  SearchRideDto,
-  UpdateRideDto,
-} from '../dto/ride.dto';
+import { CreateRideDto, SearchRideDto, UpdateRideDto } from '../dto/ride.dto';
 import { Public } from '../auth/public.decorator';
 import { GetUser } from '../auth/get-user.decorator';
 import { RideStatus } from '../entities/ride.entity';
@@ -49,10 +45,7 @@ export class RidesController {
    * Create a new ride (authenticated users only)
    */
   @Post()
-  async createRide(
-    @GetUser('id') userId: string,
-    @Body() dto: CreateRideDto,
-  ) {
+  async createRide(@GetUser('id') userId: string, @Body() dto: CreateRideDto) {
     return this.ridesService.createRide(userId, dto);
   }
 

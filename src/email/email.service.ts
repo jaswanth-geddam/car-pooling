@@ -26,7 +26,8 @@ export class EmailService {
 
     if (smtpHost && smtpUser && smtpPass) {
       const port = this.configService.get<number>('SMTP_PORT', 587);
-      const secure = this.configService.get<string>('SMTP_SECURE', 'false') === 'true';
+      const secure =
+        this.configService.get<string>('SMTP_SECURE', 'false') === 'true';
 
       // Use 'gmail' service when host is Gmail for reliable defaults (STARTTLS, etc.)
       const isGmail = smtpHost.toLowerCase().includes('gmail.com');
@@ -151,7 +152,11 @@ export class EmailService {
   /**
    * Send OTP email for registration verification
    */
-  async sendOtpEmail(email: string, firstName: string, otp: string): Promise<void> {
+  async sendOtpEmail(
+    email: string,
+    firstName: string,
+    otp: string,
+  ): Promise<void> {
     this.logger.log('');
     this.logger.log('*'.repeat(70));
     this.logger.log(`OTP EMAIL for ${email}`);
@@ -204,7 +209,10 @@ export class EmailService {
   /**
    * Send "email verified" confirmation after successful OTP verification
    */
-  async sendEmailVerifiedEmail(email: string, firstName: string): Promise<void> {
+  async sendEmailVerifiedEmail(
+    email: string,
+    firstName: string,
+  ): Promise<void> {
     const emailJob: EmailJob = {
       to: email,
       subject: 'Email verified - CarPool',
@@ -402,7 +410,9 @@ export class EmailService {
     if (this.redis) {
       try {
         await this.redis.lpush(this.QUEUE_KEY, JSON.stringify(job));
-        this.logger.log(`Email queued for ${job.to} (worker will send via SMTP)`);
+        this.logger.log(
+          `Email queued for ${job.to} (worker will send via SMTP)`,
+        );
       } catch (err) {
         this.logger.warn(
           `Redis queue failed (${(err as Error).message}), sending email directly`,
@@ -440,7 +450,9 @@ export class EmailService {
           'SMTP_USER in .env must be your real email (e.g. yourname@gmail.com), not example.com',
         );
       }
-      this.logger.log(`Sending email to ${job.to} via SMTP (from: ${fromEmail})...`);
+      this.logger.log(
+        `Sending email to ${job.to} via SMTP (from: ${fromEmail})...`,
+      );
       await this.transporter.sendMail({
         from: `CarPool <${fromEmail}>`,
         to: job.to,
@@ -450,11 +462,19 @@ export class EmailService {
       });
       this.logger.log(`Email sent successfully to ${job.to}`);
     } catch (error) {
-      const err = error as Error & { response?: string; responseCode?: number; code?: string };
+      const err = error as Error & {
+        response?: string;
+        responseCode?: number;
+        code?: string;
+      };
       const msg = err.message || String(error);
       const code = err.code ? ` [${err.code}]` : '';
-      const extra = err.response ? ` | ${String(err.response).slice(0, 200)}` : '';
-      this.logger.error(`Failed to send email to ${job.to}: ${msg}${code}${extra}`);
+      const extra = err.response
+        ? ` | ${String(err.response).slice(0, 200)}`
+        : '';
+      this.logger.error(
+        `Failed to send email to ${job.to}: ${msg}${code}${extra}`,
+      );
       this.logger.warn(
         'Check: Gmail = use App Password (not normal password); check spam folder; ensure SMTP_* in .env and app restarted.',
       );

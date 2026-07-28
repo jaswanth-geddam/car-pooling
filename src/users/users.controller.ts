@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  Put,
-  Body,
-} from '@nestjs/common';
+import { Controller, Get, Put, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { GetUser } from '../auth/get-user.decorator';
 
@@ -27,7 +22,8 @@ export class UsersController {
   @Put('profile')
   async updateProfile(
     @GetUser('id') userId: string,
-    @Body() dto: { firstName?: string; lastName?: string; profilePicture?: string },
+    @Body()
+    dto: { firstName?: string; lastName?: string; profilePicture?: string },
   ) {
     return this.usersService.updateProfile(userId, dto);
   }

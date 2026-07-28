@@ -8,10 +8,7 @@ import { User } from '../entities/user.entity';
 import { RidesModule } from '../rides/rides.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Booking, Ride, User]),
-    RidesModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Booking, Ride, User]), RidesModule],
   controllers: [BookingsController],
   providers: [BookingsService],
   exports: [BookingsService],
